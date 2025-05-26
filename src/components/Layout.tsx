@@ -13,11 +13,11 @@ interface LayoutProps {
 export const Layout = ({ children, userRole = 'super_admin', userName = 'Admin' }: LayoutProps) => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-dark-primary to-dark-secondary">
+      <div className="min-h-screen flex w-full bg-white">
         <AppSidebar userRole={userRole} />
-        <main className="flex-1 flex flex-col">
+        <main className="flex-1 flex flex-col bg-white">
           <TopNav userName={userName} userRole={userRole} />
-          <div className="flex-1 p-6 overflow-auto">
+          <div className="flex-1 p-6 overflow-auto bg-gray-50">
             {children}
           </div>
         </main>
