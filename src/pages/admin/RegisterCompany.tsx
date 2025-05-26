@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Building, Server, CheckCircle, AlertCircle } from 'lucide-react';
 import { Layout } from '@/components/Layout';
@@ -52,18 +53,18 @@ export const RegisterCompany = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Layout userName="홍관리자" userRole="super_admin">
         <div className="space-y-6 animate-fade-in">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">회사 등록 & AD 연동</h2>
+            <h2 className="text-3xl font-bold text-gray-900">회사 등록 & AD 연동</h2>
             <p className="text-gray-600">Active Directory를 연결하여 사용자를 자동으로 관리합니다</p>
           </div>
 
           {/* 라이센스 정보 카드 */}
-          <Card className="bg-green-50 border-green-200">
+          <Card className="bg-white border-gray-200 shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-green-800">
+              <CardTitle className="flex items-center gap-2 text-green-700">
                 <CheckCircle className="h-5 w-5" />
                 라이센스 활성화 완료
               </CardTitle>
@@ -93,16 +94,16 @@ export const RegisterCompany = () => {
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <Tabs defaultValue="connection" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-3 bg-gray-100">
-                  <TabsTrigger value="connection" className="data-[state=active]:bg-white">AD 연결</TabsTrigger>
-                  <TabsTrigger value="mapping" className="data-[state=active]:bg-white">필드 매핑</TabsTrigger>
-                  <TabsTrigger value="sync" className="data-[state=active]:bg-white">동기화</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 bg-white border border-gray-200">
+                  <TabsTrigger value="connection" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">AD 연결</TabsTrigger>
+                  <TabsTrigger value="mapping" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">필드 매핑</TabsTrigger>
+                  <TabsTrigger value="sync" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">동기화</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="connection">
-                  <Card className="bg-white shadow-sm">
+                  <Card className="bg-white shadow-sm border border-gray-200">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 text-gray-800">
+                      <CardTitle className="flex items-center gap-2 text-gray-900">
                         <Server className="h-5 w-5" />
                         Active Directory 연결 설정
                       </CardTitle>
@@ -119,7 +120,7 @@ export const RegisterCompany = () => {
                             placeholder="ldap://dc.company.com:389"
                             value={adConfig.serverUrl}
                             onChange={(e) => setAdConfig({...adConfig, serverUrl: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                         <div className="space-y-2">
@@ -129,7 +130,7 @@ export const RegisterCompany = () => {
                             placeholder="company.local"
                             value={adConfig.domain}
                             onChange={(e) => setAdConfig({...adConfig, domain: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -142,7 +143,7 @@ export const RegisterCompany = () => {
                             placeholder="admin@company.local"
                             value={adConfig.username}
                             onChange={(e) => setAdConfig({...adConfig, username: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                         <div className="space-y-2">
@@ -153,7 +154,7 @@ export const RegisterCompany = () => {
                             placeholder="••••••••"
                             value={adConfig.password}
                             onChange={(e) => setAdConfig({...adConfig, password: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -165,7 +166,7 @@ export const RegisterCompany = () => {
                           placeholder="DC=company,DC=local"
                           value={adConfig.baseDn}
                           onChange={(e) => setAdConfig({...adConfig, baseDn: e.target.value})}
-                          className="bg-white border-gray-300"
+                          className="bg-white border-gray-300 focus:border-blue-500"
                         />
                       </div>
 
@@ -177,7 +178,7 @@ export const RegisterCompany = () => {
                             placeholder="(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
                             value={adConfig.userFilter}
                             onChange={(e) => setAdConfig({...adConfig, userFilter: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                         <div className="space-y-2">
@@ -187,7 +188,7 @@ export const RegisterCompany = () => {
                             placeholder="(objectClass=group)"
                             value={adConfig.groupFilter}
                             onChange={(e) => setAdConfig({...adConfig, groupFilter: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -210,9 +211,9 @@ export const RegisterCompany = () => {
                 </TabsContent>
 
                 <TabsContent value="mapping">
-                  <Card className="bg-white shadow-sm">
+                  <Card className="bg-white shadow-sm border border-gray-200">
                     <CardHeader>
-                      <CardTitle className="text-gray-800">AD 필드 매핑</CardTitle>
+                      <CardTitle className="text-gray-900">AD 필드 매핑</CardTitle>
                       <CardDescription className="text-gray-600">
                         AD의 사용자 속성을 DRM 시스템의 필드와 매핑합니다
                       </CardDescription>
@@ -225,7 +226,7 @@ export const RegisterCompany = () => {
                             id="map-username"
                             value={fieldMapping.username}
                             onChange={(e) => setFieldMapping({...fieldMapping, username: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                         <div className="space-y-2">
@@ -234,7 +235,7 @@ export const RegisterCompany = () => {
                             id="map-email"
                             value={fieldMapping.email}
                             onChange={(e) => setFieldMapping({...fieldMapping, email: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -246,7 +247,7 @@ export const RegisterCompany = () => {
                             id="map-department"
                             value={fieldMapping.department}
                             onChange={(e) => setFieldMapping({...fieldMapping, department: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                         <div className="space-y-2">
@@ -255,7 +256,7 @@ export const RegisterCompany = () => {
                             id="map-title"
                             value={fieldMapping.title}
                             onChange={(e) => setFieldMapping({...fieldMapping, title: e.target.value})}
-                            className="bg-white border-gray-300"
+                            className="bg-white border-gray-300 focus:border-blue-500"
                           />
                         </div>
                       </div>
@@ -266,7 +267,7 @@ export const RegisterCompany = () => {
                           id="map-display"
                           value={fieldMapping.displayName}
                           onChange={(e) => setFieldMapping({...fieldMapping, displayName: e.target.value})}
-                          className="bg-white border-gray-300"
+                          className="bg-white border-gray-300 focus:border-blue-500"
                         />
                       </div>
 
@@ -278,9 +279,9 @@ export const RegisterCompany = () => {
                 </TabsContent>
 
                 <TabsContent value="sync">
-                  <Card className="bg-white shadow-sm">
+                  <Card className="bg-white shadow-sm border border-gray-200">
                     <CardHeader>
-                      <CardTitle className="text-gray-800">사용자 동기화</CardTitle>
+                      <CardTitle className="text-gray-900">사용자 동기화</CardTitle>
                       <CardDescription className="text-gray-600">
                         AD에서 사용자 정보를 가져와 DRM 시스템에 동기화합니다
                       </CardDescription>
@@ -294,9 +295,9 @@ export const RegisterCompany = () => {
                       </Alert>
 
                       <div className="space-y-4">
-                        <div className="flex justify-between items-center p-4 border rounded-lg">
+                        <div className="flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-white">
                           <div>
-                            <h4 className="font-medium text-gray-800">전체 동기화</h4>
+                            <h4 className="font-medium text-gray-900">전체 동기화</h4>
                             <p className="text-sm text-gray-600">
                               모든 AD 사용자를 가져와 새로 등록하거나 정보를 업데이트합니다
                             </p>
@@ -306,9 +307,9 @@ export const RegisterCompany = () => {
                           </Button>
                         </div>
 
-                        <div className="flex justify-between items-center p-4 border rounded-lg">
+                        <div className="flex justify-between items-center p-4 border border-gray-200 rounded-lg bg-white">
                           <div>
-                            <h4 className="font-medium text-gray-800">증분 동기화</h4>
+                            <h4 className="font-medium text-gray-900">증분 동기화</h4>
                             <p className="text-sm text-gray-600">
                               변경된 사용자 정보만 업데이트합니다
                             </p>
@@ -320,7 +321,7 @@ export const RegisterCompany = () => {
                       </div>
 
                       <div className="mt-6">
-                        <h4 className="font-medium text-gray-800 mb-2">마지막 동기화 결과</h4>
+                        <h4 className="font-medium text-gray-900 mb-2">마지막 동기화 결과</h4>
                         <div className="text-sm space-y-1 text-gray-600">
                           <p>동기화 시간: 2024-01-15 09:00:00</p>
                           <p>처리된 사용자: 148명</p>
@@ -337,9 +338,9 @@ export const RegisterCompany = () => {
 
             <div className="space-y-6">
               {/* 연결 상태 */}
-              <Card className="bg-white shadow-sm">
+              <Card className="bg-white shadow-sm border border-gray-200">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-gray-800">
+                  <CardTitle className="flex items-center gap-2 text-gray-900">
                     <Building className="h-5 w-5" />
                     연결 상태
                   </CardTitle>
