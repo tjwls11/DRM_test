@@ -13,6 +13,8 @@ import { Logs } from "./pages/admin/Logs";
 import { RegisterCompany } from "./pages/admin/RegisterCompany";
 import { Requests } from "./pages/dept/Requests";
 import { DeptPolicy } from "./pages/dept/DeptPolicy";
+import { Apply } from "./pages/Apply";
+import { Activate } from "./pages/Activate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,10 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* 라이센스 관련 페이지 */}
+          <Route path="/apply" element={<Apply />} />
+          <Route path="/activate" element={<Activate />} />
+          
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
