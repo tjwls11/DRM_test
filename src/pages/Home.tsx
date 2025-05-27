@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Shield, FileCheck, Users, Lock, ArrowRight, CheckCircle } from 'lucide-react';
+import { Shield, FileCheck, Users, Lock, ArrowRight, CheckCircle, Github, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -45,10 +45,11 @@ export const Home = () => {
             <div className="flex items-center gap-4">
               <Button 
                 variant="outline" 
-                onClick={() => navigate('/apply')}
+                onClick={() => window.open('https://github.com/your-username/shield-gate-drm', '_blank')}
                 className="text-gray-700 border-gray-300 hover:bg-gray-50"
               >
-                DRM 신청
+                <Github className="mr-2 h-4 w-4" />
+                GitHub
               </Button>
               <Button 
                 onClick={() => navigate('/login')}
@@ -64,25 +65,32 @@ export const Home = () => {
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <Badge variant="outline" className="mb-4 text-blue-600 border-blue-200">
-            Enterprise DRM Solution
-          </Badge>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <Badge variant="outline" className="text-blue-600 border-blue-200">
+              Open Source DRM Solution
+            </Badge>
+            <div className="flex items-center gap-1 text-sm text-gray-500">
+              <Star className="h-4 w-4" />
+              <span>오픈소스 프로젝트</span>
+            </div>
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            기업용 디지털
+            오픈소스 디지털
             <br />
             <span className="text-blue-600">권한 관리 솔루션</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             DSL 기반의 정책 엔진으로 파일 접근을 세밀하게 제어하고,
-            실시간 모니터링으로 기업의 중요한 데이터를 안전하게 보호합니다.
+            실시간 모니터링으로 기업의 중요한 데이터를 안전하게 보호하는 오픈소스 프로젝트입니다.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => navigate('/apply')}
+              onClick={() => window.open('https://github.com/your-username/shield-gate-drm', '_blank')}
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
-              무료 체험 시작하기
+              <Github className="mr-2 h-4 w-4" />
+              GitHub에서 보기
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <Button 
@@ -91,7 +99,7 @@ export const Home = () => {
               onClick={() => navigate('/login')}
               className="text-gray-700 border-gray-300 hover:bg-gray-50"
             >
-              관리자 로그인
+              데모 체험하기
             </Button>
           </div>
         </div>
@@ -187,20 +195,31 @@ export const Home = () => {
       <section className="py-20 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white mb-4">
-            지금 바로 시작하세요
+            오픈소스로 함께 만들어가요
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            30일 무료 체험으로 Shield Gate DRM의 강력한 기능을 경험해보세요
+            GitHub에서 프로젝트에 기여하고 커뮤니티와 함께 발전시켜나가세요
           </p>
-          <Button 
-            size="lg" 
-            variant="secondary"
-            onClick={() => navigate('/apply')}
-            className="bg-white text-blue-600 hover:bg-gray-50"
-          >
-            무료 체험 신청하기
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              variant="secondary"
+              onClick={() => window.open('https://github.com/your-username/shield-gate-drm', '_blank')}
+              className="bg-white text-blue-600 hover:bg-gray-50"
+            >
+              <Github className="mr-2 h-4 w-4" />
+              GitHub에서 기여하기
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => navigate('/login')}
+              className="text-white border-white hover:bg-white/10"
+            >
+              데모 둘러보기
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -212,7 +231,7 @@ export const Home = () => {
             <span className="text-lg font-semibold">Shield Gate DRM</span>
           </div>
           <div className="text-center text-gray-400">
-            <p>&copy; 2024 Shield Gate DRM. All rights reserved.</p>
+            <p>&copy; 2024 Shield Gate DRM. MIT License.</p>
           </div>
         </div>
       </footer>
