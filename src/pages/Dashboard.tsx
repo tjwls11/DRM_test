@@ -8,7 +8,8 @@ import {
   CheckCircle, 
   Clock,
   TrendingUp,
-  Activity
+  Activity,
+  XCircle
 } from 'lucide-react';
 import { Layout } from '@/components/Layout';
 import { StatCard } from '@/components/StatCard';
@@ -140,26 +141,18 @@ export const Dashboard = () => {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>정책 준수율</span>
-                  <span>94%</span>
-                </div>
-                <Progress value={94} className="h-2" />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>시스템 가용성</span>
-                  <span>99.9%</span>
-                </div>
-                <Progress value={99.9} className="h-2" />
-              </div>
-              
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
                   <span>승인 처리율</span>
                   <span>87%</span>
                 </div>
                 <Progress value={87} className="h-2" />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>거절 처리율</span>
+                  <span>13%</span>
+                </div>
+                <Progress value={13} className="h-2" />
               </div>
 
               <div className="pt-4 space-y-2">

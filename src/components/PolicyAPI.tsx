@@ -1,0 +1,344 @@
+
+import React, { useState } from 'react';
+import { Server, Play, Copy, Check } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+
+export const PolicyAPI = () => {
+  const [selectedEndpoint, setSelectedEndpoint] = useState('evaluate_access');
+  const [testUserId, setTestUserId] = useState('user1');
+  const [testFilePath, setTestFilePath] = useState('/path/to/file.pdf');
+  const [apiResponse, setApiResponse] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const endpoints = [
+    {
+      name: 'evaluate_access',
+      method: 'POST',
+      path: '/api/v1/evaluate-access',
+      description: '파일 접근 권한을 평가합니다',
+      params: {
+        user_id: 'string',
+        file_path: 'string',
+        db_path: 'string (optional)'
+      }
+    },
+    {
+      name: 'load_policies',
+      method: 'GET',
+      path: '/api/v1/policies',
+      description: '활성화된 정책 목록을 조회합니다',
+      params: {
+        db_path: 'string (optional)'
+      }
+    },
+    {
+      name: 'get_user_info',
+      method: 'GET',
+      path: '/api/v1/users/{user_id}',
+      description: '사용자 정보를 조회합니다',
+      params: {
+        user_id: 'string'
+      }
+    },
+    {
+      name: 'get_file_metadata',
+      method: 'GET',
+      path: '/api/v1/files/metadata',
+      description: '파일 메타데이터를 조회합니다',
+      params: {
+        file_path: 'string'
+      }
+    }
+  ];
+
+  const generateCurlCommand = () => {
+    const endpoint = endpoints.find(e => e.name === selectedEndpoint);
+    if (!endpoint) return '';
+
+    switch (selectedEndpoint) {
+      case 'evaluate_access':
+        return `curl -X POST "${endpoint.path}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "user_id": "${testUserId}",
+    "file_path": "${testFilePath}",
+    "db_path": "policy.db"
+  }'`;
+      
+      case 'load_policies':
+        return `curl -X GET "${endpoint.path}?db_path=policy.db"`;
+      
+      case 'get_user_info':
+        return `curl -X GET "${endpoint.path.replace('{user_id}', testUserId)}"`;
+      
+      case 'get_file_metadata':
+        return `curl -X GET "${endpoint.path}?file_path=${encodeURIComponent(testFilePath)}"`;
+      
+      default:
+        return '';
+    }
+  };
+
+  const generatePythonCode = () => {
+    const endpoint = endpoints.find(e => e.name === selectedEndpoint);
+    if (!endpoint) return '';
+
+    switch (selectedEndpoint) {
+      case 'evaluate_access':
+        return `import requests
+
+# DSL 정책 기반 파일 접근 평가
+response = requests.post("${endpoint.path}", json={
+    "user_id": "${testUserId}",
+    "file_path": "${testFilePath}",
+    "db_path": "policy.db"
+})
+
+result = response.json()
+print(f"접근 결과: {result['decision']}")
+print(f"사유: {result['reason']}")`;
+
+      case 'load_policies':
+        return `import requests
+
+# 활성화된 정책 목록 조회
+response = requests.get("${endpoint.path}", params={
+    "db_path": "policy.db"
+})
+
+policies = response.json()
+print(f"총 {len(policies)} 개의 정책이 활성화되어 있습니다")`;
+
+      case 'get_user_info':
+        return `import requests
+
+# 사용자 정보 조회
+response = requests.get("${endpoint.path.replace('{user_id}', testUserId)}")
+
+user_info = response.json()
+print(f"사용자: {user_info['id']}")
+print(f"권한등급: {user_info['rank']}")
+print(f"조직: {user_info['ou']}")`;
+
+      case 'get_file_metadata':
+        return `import requests
+
+# 파일 메타데이터 조회
+response = requests.get("${endpoint.path}", params={
+    "file_path": "${testFilePath}"
+})
+
+file_info = response.json()
+print(f"파일: {file_info['name']}")
+print(f"보안등급: {file_info['rank']}")
+print(f"소유자: {file_info['owner_user_id']}")`;
+
+      default:
+        return '';
+    }
+  };
+
+  const testAPI = async () => {
+    // 실제 API 호출 시뮬레이션
+    setApiResponse('API 호출 중...');
+    
+    setTimeout(() => {
+      const mockResponses = {
+        evaluate_access: {
+          decision: "ALLOW_ALL",
+          reason: "사용자 권한등급(3)이 파일 보안등급(2)보다 높음",
+          user_info: {
+            id: testUserId,
+            rank: 3,
+            ou: "OU=IT",
+            groups: ["Developer", "Admin"]
+          },
+          file_info: {
+            name: testFilePath.split('/').pop(),
+            rank: 2,
+            ou: "OU=IT",
+            is_private: false
+          }
+        },
+        load_policies: [
+          {
+            policy_id: "POL_IT_001",
+            priority: 1,
+            is_active: true,
+            rules: [
+              {
+                condition: { "eq": ["file.ou", "OU=IT"] },
+                action: { "allow": "read_only" }
+              }
+            ]
+          }
+        ],
+        get_user_info: {
+          id: testUserId,
+          rank: 3,
+          dn: `CN=${testUserId},OU=IT,DC=company,DC=com`,
+          ou: "OU=IT",
+          groups: ["Developer", "Admin"]
+        },
+        get_file_metadata: {
+          name: testFilePath.split('/').pop(),
+          file_ou: "OU=IT",
+          file_rank: 2,
+          is_private: false,
+          owner_user_id: "admin",
+          extension: testFilePath.split('.').pop()
+        }
+      };
+
+      setApiResponse(JSON.stringify(mockResponses[selectedEndpoint], null, 2));
+    }, 1000);
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Server className="h-5 w-5" />
+            DSL 정책 API 테스트
+          </CardTitle>
+          <CardDescription>
+            DSL 정책 엔진 API를 테스트하고 통합 코드를 생성합니다
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>API 엔드포인트</Label>
+              <Select value={selectedEndpoint} onValueChange={setSelectedEndpoint}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {endpoints.map(endpoint => (
+                    <SelectItem key={endpoint.name} value={endpoint.name}>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {endpoint.method}
+                        </Badge>
+                        {endpoint.path}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>설명</Label>
+              <p className="text-sm text-muted-foreground">
+                {endpoints.find(e => e.name === selectedEndpoint)?.description}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="user-id">사용자 ID</Label>
+              <Input
+                id="user-id"
+                value={testUserId}
+                onChange={(e) => setTestUserId(e.target.value)}
+                placeholder="user1"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="file-path">파일 경로</Label>
+              <Input
+                id="file-path"
+                value={testFilePath}
+                onChange={(e) => setTestFilePath(e.target.value)}
+                placeholder="/path/to/file.pdf"
+              />
+            </div>
+          </div>
+
+          <Button onClick={testAPI} className="w-full">
+            <Play className="h-4 w-4 mr-2" />
+            API 테스트 실행
+          </Button>
+        </CardContent>
+      </Card>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* cURL 명령어 */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>cURL 명령어</CardTitle>
+              <Button 
+                onClick={() => copyToClipboard(generateCurlCommand())} 
+                size="sm" 
+                variant="outline"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
+              {generateCurlCommand()}
+            </pre>
+          </CardContent>
+        </Card>
+
+        {/* Python 코드 */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Python 코드</CardTitle>
+              <Button 
+                onClick={() => copyToClipboard(generatePythonCode())} 
+                size="sm" 
+                variant="outline"
+              >
+                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto">
+              {generatePythonCode()}
+            </pre>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* API 응답 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>API 응답</CardTitle>
+          <CardDescription>
+            테스트 실행 결과가 여기에 표시됩니다
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Textarea
+            value={apiResponse}
+            readOnly
+            placeholder="API 테스트를 실행하면 응답이 여기에 표시됩니다"
+            className="min-h-[200px] font-mono text-sm"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
