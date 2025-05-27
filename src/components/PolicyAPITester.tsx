@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 
-export const PolicyAPI = () => {
+export const PolicyAPITester = () => {
   const [selectedEndpoint, setSelectedEndpoint] = useState('evaluate_access');
   const [testUserId, setTestUserId] = useState('user1');
   const [testFilePath, setTestFilePath] = useState('/path/to/file.pdf');
@@ -63,7 +63,7 @@ export const PolicyAPI = () => {
 
     switch (selectedEndpoint) {
       case 'evaluate_access':
-        return `curl -X POST "${endpoint.path}" \\
+        return `curl -X POST "http://localhost:8000${endpoint.path}" \\
   -H "Content-Type: application/json" \\
   -d '{
     "user_id": "${testUserId}",
@@ -72,13 +72,13 @@ export const PolicyAPI = () => {
   }'`;
       
       case 'load_policies':
-        return `curl -X GET "${endpoint.path}?db_path=policy.db"`;
+        return `curl -X GET "http://localhost:8000${endpoint.path}?db_path=policy.db"`;
       
       case 'get_user_info':
-        return `curl -X GET "${endpoint.path.replace('{user_id}', testUserId)}"`;
+        return `curl -X GET "http://localhost:8000${endpoint.path.replace('{user_id}', testUserId)}"`;
       
       case 'get_file_metadata':
-        return `curl -X GET "${endpoint.path}?file_path=${encodeURIComponent(testFilePath)}"`;
+        return `curl -X GET "http://localhost:8000${endpoint.path}?file_path=${encodeURIComponent(testFilePath)}"`;
       
       default:
         return '';
@@ -94,7 +94,7 @@ export const PolicyAPI = () => {
         return `import requests
 
 # DSL 정책 기반 파일 접근 평가
-response = requests.post("${endpoint.path}", json={
+response = requests.post("http://localhost:8000${endpoint.path}", json={
     "user_id": "${testUserId}",
     "file_path": "${testFilePath}",
     "db_path": "policy.db"
@@ -108,7 +108,7 @@ print(f"사유: {result['reason']}")`;
         return `import requests
 
 # 활성화된 정책 목록 조회
-response = requests.get("${endpoint.path}", params={
+response = requests.get("http://localhost:8000${endpoint.path}", params={
     "db_path": "policy.db"
 })
 
@@ -119,7 +119,7 @@ print(f"총 {len(policies)} 개의 정책이 활성화되어 있습니다")`;
         return `import requests
 
 # 사용자 정보 조회
-response = requests.get("${endpoint.path.replace('{user_id}', testUserId)}")
+response = requests.get("http://localhost:8000${endpoint.path.replace('{user_id}', testUserId)}")
 
 user_info = response.json()
 print(f"사용자: {user_info['id']}")
@@ -130,7 +130,7 @@ print(f"조직: {user_info['ou']}")`;
         return `import requests
 
 # 파일 메타데이터 조회
-response = requests.get("${endpoint.path}", params={
+response = requests.get("http://localhost:8000${endpoint.path}", params={
     "file_path": "${testFilePath}"
 })
 
@@ -145,7 +145,6 @@ print(f"소유자: {file_info['owner_user_id']}")`;
   };
 
   const testAPI = async () => {
-    // 실제 API 호출 시뮬레이션
     setApiResponse('API 호출 중...');
     
     setTimeout(() => {
@@ -215,7 +214,7 @@ print(f"소유자: {file_info['owner_user_id']}")`;
             DSL 정책 API 테스트
           </CardTitle>
           <CardDescription>
-            DSL 정책 엔진 API를 테스트하고 통합 코드를 생성합니다
+            FastAPI 기반 DSL 정책 엔진 API를 테스트하고 통합 코드를 생성합니다
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -279,7 +278,6 @@ print(f"소유자: {file_info['owner_user_id']}")`;
       </Card>
 
       <div className="grid md:grid-cols-2 gap-6">
-        {/* cURL 명령어 */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -300,7 +298,6 @@ print(f"소유자: {file_info['owner_user_id']}")`;
           </CardContent>
         </Card>
 
-        {/* Python 코드 */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -322,7 +319,6 @@ print(f"소유자: {file_info['owner_user_id']}")`;
         </Card>
       </div>
 
-      {/* API 응답 */}
       <Card>
         <CardHeader>
           <CardTitle>API 응답</CardTitle>
@@ -337,6 +333,147 @@ print(f"소유자: {file_info['owner_user_id']}")`;
             placeholder="API 테스트를 실행하면 응답이 여기에 표시됩니다"
             className="min-h-[200px] font-mono text-sm"
           />
+        </CardContent>
+      </Card>
+
+      {/* FastAPI 서버 코드 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>FastAPI 서버 코드</CardTitle>
+          <CardDescription>
+            아래 코드를 main.py로 저장하고 "uvicorn main:app --reload"로 실행하세요
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <pre className="bg-gray-100 p-3 rounded text-sm overflow-x-auto max-h-96">
+{`from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional, List, Dict, Any
+import uvicorn
+from policy_dsl_enum import evaluate_file_access, load_policies, get_user_info, get_file_metadata, prepare_file_context
+
+app = FastAPI(title="DSL 정책 API", version="2.0")
+
+class AccessRequest(BaseModel):
+    user_id: str
+    file_path: str
+    db_path: Optional[str] = "policy.db"
+
+class AccessResponse(BaseModel):
+    decision: str
+    reason: str
+    user_info: Dict[str, Any]
+    file_info: Dict[str, Any]
+
+@app.post("/api/v1/evaluate-access", response_model=AccessResponse)
+async def evaluate_access(request: AccessRequest):
+    try:
+        result = evaluate_file_access(request.user_id, request.file_path, request.db_path)
+        user_info = get_user_info(request.user_id, request.db_path)
+        file_info = get_file_metadata(request.file_path, request.db_path)
+        file_info = prepare_file_context(file_info)
+        
+        return AccessResponse(
+            decision=result.value,
+            reason=f"정책 평가 결과: {result.value}",
+            user_info=user_info,
+            file_info=file_info
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/v1/policies")
+async def get_policies(db_path: Optional[str] = "policy.db"):
+    try:
+        policies = load_policies(db_path)
+        return policies
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/api/v1/users/{user_id}")
+async def get_user(user_id: str, db_path: Optional[str] = "policy.db"):
+    try:
+        user_info = get_user_info(user_id, db_path)
+        return user_info
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+@app.get("/api/v1/files/metadata")
+async def get_file_meta(file_path: str, db_path: Optional[str] = "policy.db"):
+    try:
+        file_info = get_file_metadata(file_path, db_path)
+        file_info = prepare_file_context(file_info)
+        return file_info
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)`}
+          </pre>
+        </CardContent>
+      </Card>
+
+      {/* 설치 및 실행 가이드 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>설치 및 실행 가이드</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h4 className="font-semibold mb-2">1. 필요한 패키지 설치</h4>
+            <pre className="bg-gray-100 p-3 rounded text-sm">
+pip install fastapi uvicorn
+            </pre>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-2">2. 서버 실행</h4>
+            <pre className="bg-gray-100 p-3 rounded text-sm">
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+            </pre>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-2">3. API 문서 확인</h4>
+            <p className="text-sm text-muted-foreground">
+              서버 실행 후 <code>http://localhost:8000/docs</code>에서 Swagger UI를 확인할 수 있습니다.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};`}
+          </pre>
+        </CardContent>
+      </Card>
+
+      {/* 설치 및 실행 가이드 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>설치 및 실행 가이드</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <h4 className="font-semibold mb-2">1. 필요한 패키지 설치</h4>
+            <pre className="bg-gray-100 p-3 rounded text-sm">
+pip install fastapi uvicorn
+            </pre>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-2">2. 서버 실행</h4>
+            <pre className="bg-gray-100 p-3 rounded text-sm">
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+            </pre>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold mb-2">3. API 문서 확인</h4>
+            <p className="text-sm text-muted-foreground">
+              서버 실행 후 <code>http://localhost:8000/docs</code>에서 Swagger UI를 확인할 수 있습니다.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

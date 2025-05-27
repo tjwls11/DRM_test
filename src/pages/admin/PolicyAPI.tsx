@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Layout } from '@/components/Layout';
-import { PolicyAPI } from '@/components/PolicyAPI';
+import { PolicyAPITester } from '@/components/PolicyAPITester';
 
 export const PolicyAPI = () => {
   return (
@@ -12,7 +12,7 @@ export const PolicyAPI = () => {
           <p className="text-muted-foreground">정책 엔진 API를 테스트하고 통합 가이드를 확인하세요</p>
         </div>
 
-        <PolicyAPI />
+        <PolicyAPITester />
       </div>
     </Layout>
   );
