@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Shield, FileCheck, Users, Lock, ArrowRight, CheckCircle, Github, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -52,10 +51,10 @@ export const Home = () => {
                 GitHub
               </Button>
               <Button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/apply')}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
-                로그인
+                신청하기
               </Button>
             </div>
           </div>
@@ -96,10 +95,10 @@ export const Home = () => {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/apply')}
               className="text-gray-700 border-gray-300 hover:bg-gray-50"
             >
-              데모 체험하기
+              라이센스 신청하기
             </Button>
           </div>
         </div>
@@ -214,10 +213,10 @@ export const Home = () => {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => navigate('/login')}
+              onClick={() => navigate('/apply')}
               className="text-white border-white hover:bg-white/10"
             >
-              데모 둘러보기
+              라이센스 신청하기
             </Button>
           </div>
         </div>
